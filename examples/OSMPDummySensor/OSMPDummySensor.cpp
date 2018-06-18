@@ -105,8 +105,7 @@ bool COSMPDummySensor::get_fmi_sensor_view_config(osi3::SensorViewConfiguration&
     if (integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_SIZE_IDX] > 0) {
         void* buffer = decode_integer_to_pointer(integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_BASEHI_IDX],integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_BASELO_IDX]);
         normal_log("OSMP","Got %08X %08X, reading from %p ...",integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_BASEHI_IDX],integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_BASELO_IDX],buffer);
-        data.ParseFromArray(buffer,integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_SIZE_IDX]);
-        return true;
+        return data.ParseFromArray(buffer,integer_vars[FMI_INTEGER_SENSORVIEW_CONFIG_SIZE_IDX]);
     } else {
         return false;
     }
@@ -315,12 +314,12 @@ fmi2Status COSMPDummySensor::doCalc(fmi2Real currentCommunicationPoint, fmi2Real
                         obj->mutable_base()->mutable_dimension()->set_length(veh.base().dimension().length());
                         obj->mutable_base()->mutable_dimension()->set_width(veh.base().dimension().width());
                         obj->mutable_base()->mutable_dimension()->set_height(veh.base().dimension().height());
-                        
+
                         osi3::DetectedMovingObject::CandidateMovingObject* candidate = obj->add_candidate();
                         candidate->set_type(veh.type());
                         candidate->mutable_vehicle_classification()->CopyFrom(veh.vehicle_classification());
                         candidate->set_probability(1);
-                        
+
                         normal_log("OSI","Output Vehicle %d[%llu] Probability %f Relative Position: %f,%f,%f (%f,%f,%f)",i,veh.id().value(),obj->header().existence_probability(),rel_x,rel_y,rel_z,obj->base().position().x(),obj->base().position().y(),obj->base().position().z());
                         i++;
                     } else {
